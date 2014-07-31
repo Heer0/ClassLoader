@@ -1,0 +1,31 @@
+{
+    "name": "mekras/class-loader",
+    "type": "library",
+    "description": "Additional class loaders for Symfony",
+    "keywords": ["symfony", "autoload", "redis"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Михаил Красильников",
+            "email": "m.krasilnikov@yandex.ru"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev":
+    {
+        "ext-xdebug": "*",
+        "phpunit/phpunit": "~4.0",
+        "satooshi/php-coveralls": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mekras\\Symfony\\ClassLoader\\": "src/"
+        }
+    },
+    "suggest": {
+        "ext-redis": "To use Redis for caching autoload"
+    }
+}
