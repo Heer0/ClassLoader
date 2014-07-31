@@ -27,7 +27,7 @@ class RedisClassLoaderTest extends \PHPUnit_Framework_TestCase
         $loader->add('Foo', __DIR__ . '/fixtures');
 
         $redis = $this->getMockBuilder('Redis')->disableOriginalConstructor()
-            ->setMethods(['get', 'set'])->getMock();
+            ->setMethods(array('get', 'set'))->getMock();
         $redis->expects($this->exactly(2))->method('get')->with('abcFoo\Bar')->willReturnCallback(
             function () {
                 static $it = 1;
