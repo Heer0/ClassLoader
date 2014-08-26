@@ -49,12 +49,12 @@ class RedisClassLoader
     protected $decorated;
 
     /**
-     * Custom prefix to distinguish applications
+     * Custom uid to distinguish applications
      *
      * @var string
-     * @since 1.00
+     * @since 1.01
      */
-    private $prefix;
+    private $uid;
 
     /**
      * Interface to redis
@@ -67,8 +67,8 @@ class RedisClassLoader
     /**
      * Constructs new wrapper
      *
-     * @param Redis $redis interface to Rediы
-     * @param string $prefix    prefix to distinguish applications
+     * @param Redis  $redis     interface to Redis
+     * @param string $uid       uid to distinguish applications
      * @param object $decorated a class loader object that implements the findFile() method
      *
      * @throws \InvalidArgumentException
@@ -76,7 +76,7 @@ class RedisClassLoader
      * @api
      * @since 1.00
      */
-    public function __construct(Redis $redis, $prefix, $decorated)
+    public function __construct(Redis $redis, $uid, $decorated)
     {
         $this->redis = $redis;
 
@@ -86,7 +86,7 @@ class RedisClassLoader
             );
         }
 
-        $this->prefix = $prefix;
+        $this->uid = 'symfony.autoload.' . $uid;
         $this->decorated = $decorated;
     }
 
@@ -152,10 +152,10 @@ class RedisClassLoader
      */
     public function findFile($class)
     {
-        $file = $this->redis->get($this->prefix . $class);
+        $file = $this->redis->hGet($this->uid, $class);
         if (false === $file) {
             $file = $this->decorated->findFile($class);
-            $this->redis->set($this->prefix . $class, $file);
+            $this->redis->hSet($this->uid, $class, $file);
         }
 
         return $file;
