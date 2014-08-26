@@ -27,14 +27,15 @@ class RedisClassLoaderTest extends \PHPUnit_Framework_TestCase
         $loader->add('Foo', __DIR__ . '/fixtures');
 
         $redis = $this->getMockBuilder('Redis')->disableOriginalConstructor()
-            ->setMethods(array('get', 'set'))->getMock();
-        $redis->expects($this->exactly(2))->method('get')->with('abcFoo\Bar')->willReturnCallback(
-            function () {
-                static $it = 1;
-                return $it++ == 1 ? false : 'filename';
-            }
-        );
-        $redis->expects($this->once())->method('set')->with('abcFoo\Bar');
+            ->setMethods(array('hGet', 'hSet'))->getMock();
+        $redis->expects($this->exactly(2))->method('hGet')->with('symfony.autoload.abc', 'Foo\Bar')
+            ->willReturnCallback(
+                function () {
+                    static $it = 1;
+                    return $it++ == 1 ? false : 'filename';
+                }
+            );
+        $redis->expects($this->once())->method('hSet')->with('symfony.autoload.abc', 'Foo\Bar');
 
         $cachedLoader = new RedisClassLoader($redis, 'abc', $loader);
 
